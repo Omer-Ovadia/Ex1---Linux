@@ -9,7 +9,7 @@ int main() {
     int choice;
 
     // Main menu loop
-    do {
+    while (true) {
         std::cout << "\n==== Bitcoin Block Menu ====" << std::endl;
         std::cout << "1. Print all blocks" << std::endl;
         std::cout << "2. Search block by hash" << std::endl;
@@ -21,15 +21,15 @@ int main() {
 
         std::cin >> choice;
 
-        // Handle invalid input (e.g. letters instead of numbers)
+        // Handle invalid input (non-integer)
         if (std::cin.fail()) {
-            std::cin.clear(); // Reset the error flag
+            std::cin.clear(); // Clear error flag
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
             std::cout << "Invalid input. Please enter a number." << std::endl;
-            continue; // Restart the loop
+            continue; // Prompt again
         }
 
-        std::cin.ignore(); // Clear leftover newline from buffer
+        std::cin.ignore(); // Clear newline from buffer after integer input
 
         switch (choice) {
             case 1:
@@ -37,7 +37,7 @@ int main() {
                 PrintAllBlocks(blocks);
                 break;
             case 2: {
-                // Search block by its hash
+                // Search block by hash
                 std::string hash;
                 std::cout << "Enter hash: ";
                 std::getline(std::cin, hash);
@@ -50,7 +50,7 @@ int main() {
                 break;
             }
             case 3: {
-                // Search block by its height
+                // Search block by height
                 int height;
                 std::cout << "Enter height: ";
                 std::cin >> height;
@@ -60,7 +60,7 @@ int main() {
                     std::cout << "Invalid input. Height must be a number." << std::endl;
                     break;
                 }
-                std::cin.ignore();
+                std::cin.ignore(); // Clear leftover input
                 const Block* result = FindBlockByHeight(blocks, height);
                 if (result) {
                     PrintBlock(*result);
@@ -70,11 +70,11 @@ int main() {
                 break;
             }
             case 4:
-                // Export all blocks to a CSV file
+                // Export blocks to a CSV file
                 ExportToCSV(blocks, "output.csv");
                 break;
             case 5: {
-                // Download new blocks from API and reload the database
+                // Reload blocks from external script and update database
                 int count;
                 std::cout << "Enter number of blocks to download: ";
                 std::cin >> count;
@@ -84,18 +84,19 @@ int main() {
                     std::cout << "Invalid input. Please enter a positive number." << std::endl;
                     break;
                 }
-                std::cin.ignore();
+                std::cin.ignore(); // Clear input buffer
                 ReloadBlocksFromScript("./fetch_blocks.sh", count);
-                blocks = LoadDatabase("data"); // Reload updated blocks
+                blocks = LoadDatabase("data"); // Reload the updated block list
                 break;
             }
             case 0:
                 std::cout << "Exiting..." << std::endl;
-                break;
+                return 0;
             default:
-                std::cout << "Invalid choice." << std::endl;
+                std::cout << "Invalid choice. Please select a valid option." << std::endl;
+                break;
         }
-    } while (choice != 0);
+    }
 
     return 0;
 }
