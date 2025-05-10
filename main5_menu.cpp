@@ -4,9 +4,11 @@
 #include <limits>
 
 int main() {
+    // Load all blocks from the "data" directory
     std::vector<Block> blocks = LoadDatabase("data");
     int choice;
 
+    // Main menu loop
     do {
         std::cout << "\n==== Bitcoin Block Menu ====" << std::endl;
         std::cout << "1. Print all blocks" << std::endl;
@@ -19,21 +21,23 @@ int main() {
 
         std::cin >> choice;
 
-        // טיפול בקלט לא חוקי
+        // Handle invalid input (e.g. letters instead of numbers)
         if (std::cin.fail()) {
-            std::cin.clear(); // נקה מצב שגיאה
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // זרוק את הקלט הלא חוקי
+            std::cin.clear(); // Reset the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
             std::cout << "Invalid input. Please enter a number." << std::endl;
-            continue; // דלג לתחילת הלולאה
+            continue; // Restart the loop
         }
 
-        std::cin.ignore(); // נקה תו מעבר שורה
+        std::cin.ignore(); // Clear leftover newline from buffer
 
         switch (choice) {
             case 1:
+                // Print all loaded blocks
                 PrintAllBlocks(blocks);
                 break;
             case 2: {
+                // Search block by its hash
                 std::string hash;
                 std::cout << "Enter hash: ";
                 std::getline(std::cin, hash);
@@ -46,6 +50,7 @@ int main() {
                 break;
             }
             case 3: {
+                // Search block by its height
                 int height;
                 std::cout << "Enter height: ";
                 std::cin >> height;
@@ -65,9 +70,11 @@ int main() {
                 break;
             }
             case 4:
+                // Export all blocks to a CSV file
                 ExportToCSV(blocks, "output.csv");
                 break;
             case 5: {
+                // Download new blocks from API and reload the database
                 int count;
                 std::cout << "Enter number of blocks to download: ";
                 std::cin >> count;
@@ -79,7 +86,7 @@ int main() {
                 }
                 std::cin.ignore();
                 ReloadBlocksFromScript("./fetch_blocks.sh", count);
-                blocks = LoadDatabase("data");
+                blocks = LoadDatabase("data"); // Reload updated blocks
                 break;
             }
             case 0:
@@ -92,5 +99,3 @@ int main() {
 
     return 0;
 }
-
-
