@@ -1,11 +1,38 @@
-Exercise 1 - Linux Course 
+Exercise 1 – Linux Course
 
-Omer Ovadia - 211603865
+Authors:
+- Omer Ovadia – 211603865
+- Gal Jacoby – 322659350
+- Shay Toledo – 314654484
 
-Gal Jacoby - 322659350
+Project Instructions:
 
-Shay Toledo - 314654484
+All project files and folders should be placed in the same root directory.
 
-all the folders should be in the same folder 
-the script make folder: "data" and inside the folder "data" have the text with the bolcks inside
-so first of all before you run the make you should run the script that make you dolfer data with the blocks because the "main" need to get the folder "data" with the bolcks
+Before compiling and running the program, follow these steps:
+
+1. Grant execution permission to the script (only required once):
+
+      chmod +x fetch_blocks.sh
+
+2. Run the script to generate the "data" folder containing the block text files.  
+   Example (to generate 3 blocks):
+
+      ./fetch_blocks.sh 3
+
+3. Compile the project using the Makefile:
+
+      make
+
+4. Set the environment variable so that executables can locate the shared library:
+
+      export LD_LIBRARY_PATH=.
+
+5. Run the desired executable, for example:
+
+      ./main5_menu.out
+      ./main1_printdb.out
+
+Notes:
+- The `data` folder is required for the main programs to function correctly.
+- The environment variable `LD_LIBRARY_PATH=.` must be set each time you open a new terminal session, unless added to your `.bashrc`.
