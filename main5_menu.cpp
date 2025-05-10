@@ -1,6 +1,7 @@
 // === main5_menu.cpp ===
 #include "functions.h"
 #include <iostream>
+#include <limits>
 
 int main() {
     std::vector<Block> blocks = LoadDatabase("data");
@@ -15,8 +16,18 @@ int main() {
         std::cout << "5. Reload new blocks from API" << std::endl;
         std::cout << "0. Exit" << std::endl;
         std::cout << "Select option: ";
+
         std::cin >> choice;
-        std::cin.ignore();
+
+        // טיפול בקלט לא חוקי
+        if (std::cin.fail()) {
+            std::cin.clear(); // נקה מצב שגיאה
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // זרוק את הקלט הלא חוקי
+            std::cout << "Invalid input. Please enter a number." << std::endl;
+            continue; // דלג לתחילת הלולאה
+        }
+
+        std::cin.ignore(); // נקה תו מעבר שורה
 
         switch (choice) {
             case 1:
@@ -38,6 +49,12 @@ int main() {
                 int height;
                 std::cout << "Enter height: ";
                 std::cin >> height;
+                if (std::cin.fail()) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Invalid input. Height must be a number." << std::endl;
+                    break;
+                }
                 std::cin.ignore();
                 const Block* result = FindBlockByHeight(blocks, height);
                 if (result) {
@@ -54,6 +71,12 @@ int main() {
                 int count;
                 std::cout << "Enter number of blocks to download: ";
                 std::cin >> count;
+                if (std::cin.fail() || count <= 0) {
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Invalid input. Please enter a positive number." << std::endl;
+                    break;
+                }
                 std::cin.ignore();
                 ReloadBlocksFromScript("./fetch_blocks.sh", count);
                 blocks = LoadDatabase("data");
@@ -69,4 +92,5 @@ int main() {
 
     return 0;
 }
+
 
